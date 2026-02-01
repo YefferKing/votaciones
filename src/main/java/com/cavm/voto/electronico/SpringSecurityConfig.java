@@ -25,32 +25,8 @@ public class SpringSecurityConfig {
 	@Autowired
 	private UserServiceImpl userDetail;
 	
-	@Bean
-	public UserDetailsService userDetailsService()throws Exception{
-				
-		InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-		manager.createUser(User
-	            .withUsername("user")
-	            .password(passwordEncoder().encode("user"))
-	            .roles("USER")
-	            .build());
-		 manager.createUser(User
-		            .withUsername("admin")
-		            .password(passwordEncoder().encode("admin"))
-		            .roles("ADMIN","USER")
-		            .build());
-		
-		return manager;
-		/*UserDetails user =
-				 User.withDefaultPasswordEncoder()
-					.username("user")
-					.password("password")
-					.roles("USER")
-					.build();
+	/* Se elimina el UserDetailsService en memoria para usar el de la base de datos (UserServiceImpl) */
 
-			return new InMemoryUserDetailsManager(user);*/
-
-	}
 	
 	@Bean 
 	public static BCryptPasswordEncoder passwordEncoder() {
