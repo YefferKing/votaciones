@@ -186,27 +186,33 @@ public class ElectionController {
 	public String config(@Valid Election election, BindingResult result, @RequestParam MultipartFile logo, RedirectAttributes redirect, Model model) throws IOException {
 		if(!election.getName().isBlank()/* && !logo.isEmpty()*/) {
 			if(!logo.isEmpty()) {
-			Path directorioRecursos = Paths.get("src//main//resources//static/uploads");
-			String rootPath 	= directorioRecursos.toFile().getAbsolutePath();
-			Path path = Paths.get(rootPath);
-			if(Files.exists(path)) {
-				path	= Paths.get(rootPath);
-			}else {
-				path	= Paths.get(getClass().getResource("/static/uploads").toString().substring(6));
-			}
-			String extension 	= StringUtils.getFilenameExtension(logo.getOriginalFilename());
-			String name			= election.getName().substring(0, 10).replace(" ", "_");
-			Path rutaCompleta	= Paths.get(path.toString() +"//"+name+"_conf."+extension);
-			byte[] bytes 		= logo.getBytes();
-			Files.write(rutaCompleta, bytes);
-			election.setLogo(name+"_conf."+extension);
+				try {
+					String uploadDir = "/tmp/uploads/";
+					Path path = Paths.get(uploadDir);
+					if (!Files.exists(path)) {
+						Files.createDirectories(path);
+					}
+					
+					String extension = StringUtils.getFilenameExtension(logo.getOriginalFilename());
+					String name = election.getName().substring(0, Math.min(10, election.getName().length())).replace(" ", "_");
+					byte[] bytes = logo.getBytes();
+					Path rutaCompleta = path.resolve(name + "_conf." + extension);
+					Files.write(rutaCompleta, bytes);
+					election.setLogo(name + "_conf." + extension);
+				} catch (Exception e) {
+					System.err.println("Error guardando logo elección: " + e.getMessage());
+					if (election.getId() != null) {
+						Election election2 = electionService.findById(election.getId());
+						election.setLogo(election2 != null ? election2.getLogo() : null);
+					}
+				}
 			}else {
 				if(election.getId()!=null) {
 					Election election2 = electionService.findById(election.getId());
 					election.setLogo(election2.getLogo());
 					redirect.addFlashAttribute("message", new String[] {"OK", "Actualizado con éxito!!!"});
 					electionService.save(election);
-				return "redirect:/election/config";
+					return "redirect:/election/config";
 				}else {
 					model.addAttribute("title", "Datos de la Elección");
 					model.addAttribute("election", election);

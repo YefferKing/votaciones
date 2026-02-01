@@ -43,19 +43,25 @@ public class InstitutionController {
 	@PostMapping("")
 	public String index(@Valid Institution inst, BindingResult result, @RequestParam MultipartFile logo, RedirectAttributes redirect) throws IOException, URISyntaxException {
 		if(!inst.getName().isBlank()/* && !logo.isEmpty()*/) {
-			Path directorioRecursos = null;
 			if(!logo.isEmpty()) {
-				directorioRecursos = Paths.get("src//main//resources//static/uploads");
-				String rootPath 	= directorioRecursos.toFile().getAbsolutePath();
-				Path path = Paths.get(rootPath);
-				if(Files.exists(path)) {
-					path	= Paths.get(rootPath, logo.getOriginalFilename());
-				}else {
-					path	= Paths.get(getClass().getResource("/static/uploads").toString().substring(6), logo.getOriginalFilename());
+				try {
+					String uploadDir = "/tmp/uploads/";
+					Path path = Paths.get(uploadDir);
+					if (!Files.exists(path)) {
+						Files.createDirectories(path);
+					}
+					
+					byte[] bytes = logo.getBytes();
+					Path rutaCompleta = path.resolve(logo.getOriginalFilename());
+					Files.write(rutaCompleta, bytes);
+					inst.setLogo(logo.getOriginalFilename());
+				} catch (Exception e) {
+					System.err.println("Error guardando logo institución: " + e.getMessage());
+					if (inst.getId() != null) {
+						Institution institucion = institutionService.findById(inst.getId());
+						inst.setLogo(institucion != null ? institucion.getLogo() : null);
+					}
 				}
-				byte[] bytes 		= logo.getBytes();
-				Files.write(path, bytes);
-				inst.setLogo(logo.getOriginalFilename());
 			}else {
 				if(inst.getId()!=null) {
 					Institution institucion = institutionService.findById(inst.getId());

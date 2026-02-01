@@ -56,25 +56,33 @@ public class CandidateListController {
 			return "redirect:/list";
 		}
 		CandidateList candList = null;
-		Path directorioRecursos = Paths.get("src//main//resources//static/uploads");
-		String rootPath = directorioRecursos.toFile().getAbsolutePath();
+		
 		if(!logo.isEmpty()) {
-			Path path = Paths.get(rootPath);
-			if(Files.exists(path)) {
-				path	= Paths.get(rootPath);
-			}else {
-				path	= Paths.get(getClass().getResource("/static/uploads").toString().substring(6));
+			try {
+				// En Render/Linux usamos /tmp para archivos temporales
+				String uploadDir = "/tmp/uploads/";
+				Path path = Paths.get(uploadDir);
+				if (!Files.exists(path)) {
+					Files.createDirectories(path);
+				}
+				
+				String extension = StringUtils.getFilenameExtension(logo.getOriginalFilename());
+				String name = newList.getName().replace(" ", "_");
+				byte[] bytes2 = logo.getBytes();
+				Path rutaCompleta2 = path.resolve(name + "_logo." + extension);
+				Files.write(rutaCompleta2, bytes2);
+				newList.setLogo(name + "_logo." + extension);
+			} catch (Exception e) {
+				System.err.println("Error guardando logo: " + e.getMessage());
+				// Si falla, intentamos mantener el logo anterior si existe
+				if (newList.getId() != null) {
+					candList = candidateListService.findById(newList.getId());
+					newList.setLogo(candList != null ? candList.getLogo() : null);
+				}
 			}
-			String extension 	= StringUtils.getFilenameExtension(logo.getOriginalFilename());
-			String name			= newList.getName().replace(" ", "_");
-			byte[] bytes2 		= logo.getBytes();
-			Path rutaCompleta2	= Paths.get(path.toString() +"//"+name+"_logo."+extension);
-			Files.write(rutaCompleta2, bytes2);
-			newList.setLogo(name+"_logo."+extension);
 		}else {
 			if(newList.getId()!=null) {
 				candList = candidateListService.findById(newList.getId());
-				//newList.setImgCandidate(candList.getImgCandidate());
 				newList.setLogo(candList.getLogo());
 				flash.addFlashAttribute("message", new String[] {"OK", "Actualizado con éxito!!!"});
 				candidateListService.save(newList);
