@@ -43,7 +43,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
 		http
 		.authorizeHttpRequests((requests) -> requests
-			.requestMatchers(mvc.pattern("/"),mvc.pattern("/login"), mvc.pattern("/election/**"),mvc.pattern("/img/**"),mvc.pattern("/css/**"),mvc.pattern("/js/**"),mvc.pattern("/uploads/**")).permitAll()
+			.requestMatchers(mvc.pattern("/"),mvc.pattern("/login"), mvc.pattern("/public/alive"), mvc.pattern("/election/**"),mvc.pattern("/img/**"),mvc.pattern("/css/**"),mvc.pattern("/js/**"),mvc.pattern("/uploads/**")).permitAll()
 			//.requestMatchers("/institution").hasRole("ADMIN")
 			.anyRequest().authenticated()
 		)
