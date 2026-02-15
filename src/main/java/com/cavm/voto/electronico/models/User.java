@@ -58,7 +58,7 @@ public class User  implements Serializable{
 	@Column(name ="update_at" ,nullable = true)
 	private Date updateAt;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private List<RoleUser> roles;
 
