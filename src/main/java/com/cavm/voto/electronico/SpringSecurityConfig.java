@@ -23,8 +23,8 @@ public class SpringSecurityConfig {
 	private UserServiceImpl userDetail;
 	
 	@Bean 
-	public static BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+	public static org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
+		return org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance();
 	}
 	
 	@Bean
