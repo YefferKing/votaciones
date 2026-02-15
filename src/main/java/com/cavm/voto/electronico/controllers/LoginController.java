@@ -4,6 +4,8 @@ package com.cavm.voto.electronico.controllers;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -31,9 +33,12 @@ public class LoginController {
     private BCryptPasswordEncoder passwordEncoder;
 	
 	@GetMapping({"/login","/"})
-	public String login(@RequestParam(value = "error", required = false)String error, Model model, Principal principal) {
+	public String login(@RequestParam(value = "error", required = false)String error, Model model, Principal principal, Authentication authentication) {
 		if(principal != null) {
-			return "redirect:/institution";
+			if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+				return "redirect:/institution";
+			}
+			return "redirect:/election";
 		}
 		if(error != null) {
 			model.addAttribute("message", new String[] {"ERROR", "Nombre de usuario o contraseña incorrecta"});

@@ -43,8 +43,18 @@ public class SpringSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
 		http
 		.authorizeHttpRequests((requests) -> requests
-			.requestMatchers(mvc.pattern("/"),mvc.pattern("/login"), mvc.pattern("/public/alive"), mvc.pattern("/election/**"),mvc.pattern("/img/**"),mvc.pattern("/css/**"),mvc.pattern("/js/**"),mvc.pattern("/uploads/**")).permitAll()
-			//.requestMatchers("/institution").hasRole("ADMIN")
+			.requestMatchers(mvc.pattern("/"), mvc.pattern("/login"), mvc.pattern("/public/alive"), mvc.pattern("/error_403")).permitAll()
+			.requestMatchers(mvc.pattern("/img/**"), mvc.pattern("/css/**"), mvc.pattern("/js/**"), mvc.pattern("/uploads/**")).permitAll()
+			.requestMatchers(mvc.pattern("/election/result")).hasRole("ADMIN")
+			.requestMatchers(mvc.pattern("/election/config/**")).hasRole("ADMIN")
+			.requestMatchers(mvc.pattern("/election/reset")).hasRole("ADMIN")
+			.requestMatchers(mvc.pattern("/institution/**")).hasRole("ADMIN")
+			.requestMatchers(mvc.pattern("/list/**")).hasRole("ADMIN")
+			.requestMatchers(mvc.pattern("/role/**")).hasRole("ADMIN")
+			.requestMatchers(mvc.pattern("/grade/**")).hasRole("ADMIN")
+			.requestMatchers(mvc.pattern("/section/**")).hasRole("ADMIN")
+			.requestMatchers(mvc.pattern("/student/**")).hasRole("ADMIN")
+			.requestMatchers(mvc.pattern("/election/**")).hasAnyRole("ADMIN", "USER")
 			.anyRequest().authenticated()
 		)
 		.formLogin((form) -> form
