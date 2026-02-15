@@ -7,10 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
@@ -55,7 +52,7 @@ public class SpringSecurityConfig {
 		)
 		.formLogin((form) -> form
 			.loginPage("/login")
-			.defaultSuccessUrl("/login") // El controlador de login se encargará de la redirección por rol
+			.defaultSuccessUrl("/login") 
 			.permitAll()
 		)
 		.logout((logout) -> logout.permitAll())
@@ -65,17 +62,11 @@ public class SpringSecurityConfig {
 
 	return http.build();
     }
-		
-		
-            
-    }
 	
 	@Autowired
 	public void configurerGlobal(AuthenticationManagerBuilder build) throws Exception
 	{
 		build.userDetailsService(userDetail)
 		.passwordEncoder(passwordEncoder());
-
 	}
-    
 }
