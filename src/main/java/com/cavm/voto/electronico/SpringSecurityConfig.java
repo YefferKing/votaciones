@@ -18,15 +18,12 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import com.cavm.voto.electronico.services.UserServiceImpl;
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SpringSecurityConfig {
 	
 	@Autowired
 	private UserServiceImpl userDetail;
-	
-	/* Se elimina el UserDetailsService en memoria para usar el de la base de datos (UserServiceImpl) */
-
 	
 	@Bean 
 	public static BCryptPasswordEncoder passwordEncoder() {
@@ -38,7 +35,6 @@ public class SpringSecurityConfig {
 		return new MvcRequestMatcher.Builder(introspector);
 	}
 
-	
 	@Bean
     public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
 		http
@@ -59,6 +55,7 @@ public class SpringSecurityConfig {
 		)
 		.formLogin((form) -> form
 			.loginPage("/login")
+			.defaultSuccessUrl("/login") // El controlador de login se encargará de la redirección por rol
 			.permitAll()
 		)
 		.logout((logout) -> logout.permitAll())
@@ -67,6 +64,7 @@ public class SpringSecurityConfig {
 		});
 
 	return http.build();
+    }
 		
 		
             
