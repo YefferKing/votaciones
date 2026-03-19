@@ -157,15 +157,20 @@ public class ElectionController {
 		String[] labels = new String[size];
 	    int[] data = new int[size];
 	    int i = 0;
+	    long maxVotes = 1; // Mínimo 1 para evitar division por cero
 	    for(Object[] dato : result){
 	        labels[i] = dato[0] != null ? dato[0].toString() : "Desconocido";
 	        data[i] = dato[2] != null ? Integer.parseInt(dato[2].toString()) : 0;
+	        if(data[i] > maxVotes) {
+	        	maxVotes = data[i];
+	        }
 	        i++;
 	    }
 		model.addAttribute("results", result);
 		model.addAttribute("ruta", "result");
 		model.addAttribute("labels", labels);
 		model.addAttribute("data", data);
+		model.addAttribute("maxVotes", maxVotes);
 		model.addAttribute("election", election);
 		return "result";
 	}

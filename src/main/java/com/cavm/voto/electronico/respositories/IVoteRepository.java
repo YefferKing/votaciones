@@ -13,9 +13,8 @@ public interface IVoteRepository extends CrudRepository<Vote, Long> {
 	
 	Vote findByStudent(Student student);
 	
-	@Query("SELECT l.name, l.color, COUNT(v.id), l.imgCandidate, l.logo FROM CandidateList l LEFT JOIN Vote v ON l = v.candidateList GROUP BY l.id, l.name, l.color, l.imgCandidate, l.logo ORDER BY COUNT(v.id) DESC")
-	List<Object[]> countVoteByList();
-	
+	@Query("SELECT l.name, l.color, COUNT(v.id), l.imgCandidate, l.logo FROM Vote v RIGHT JOIN v.candidateList l GROUP BY l.id, l.name, l.color, l.imgCandidate, l.logo ORDER BY COUNT(v.id) DESC")
+	List<Object[]> countVoteByList();	
 	@Query("SELECT s FROM Vote v  Right JOIN v.student s WHERE s IS NULL")
     List<Student> findStudentsWithoutVotes();
 	

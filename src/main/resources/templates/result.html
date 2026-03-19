@@ -175,7 +175,7 @@
         <!-- ALL Candidates dynamically aligned as a bar chart / podium -->
         <div class="podium-section">
             <!-- maxVotes determines the tallest bar proportionally. results is sorted highest to lowest -->
-            <div class="podium-wrapper" th:with="maxVotes=${results[0][2] == 0 ? 1.0 : results[0][2]}">
+            <div class="podium-wrapper">
                 
                 <th:block th:each="dato, stat : ${results}">
                     <div class="podium-item" 
