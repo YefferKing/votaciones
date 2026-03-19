@@ -2,83 +2,207 @@
 <html xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Resultados de la Elección</title>
+    <!-- Use Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #f5f5f7;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #033771;
+            margin-top: 40px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 20px;
+        }
+
+        .podium-section {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-top: 150px;
+            padding-bottom: 50px;
+            min-height: 500px;
+            overflow-x: auto; /* In case there are many candidates */
+        }
+
+        .podium-wrapper {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 20px;
+            padding: 0 40px;
+        }
+
+        .podium-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 180px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            position: relative;
+            color: white;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .podium-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+        }
+
+        .podium-info {
+            position: absolute;
+            top: -140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .podium-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 6px solid white;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+            background-color: white;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .podium-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .badge {
+            width: 35px;
+            height: 35px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #333;
+            position: absolute;
+            bottom: -15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .podium-name {
+            margin-top: 25px;
+            font-weight: 800;
+            color: #fff;
+            text-align: center;
+            font-size: 1rem;
+            background: rgba(3, 55, 113, 0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            max-width: 90%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .podium-votes {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-top: auto;
+            margin-bottom: 20px;
+            text-shadow: 2px 3px 5px rgba(0,0,0,0.3);
+        }
+        
+        .podium-label {
+            font-size: 1rem;
+            font-weight: 800;
+            opacity: 0.95;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Rank specific backgrounds */
+        .rank-1 { background: linear-gradient(135deg, #FFD700 0%, #F5A623 100%); }
+        .rank-1 .badge { color: #F5A623; }
+
+        .rank-2 { background: linear-gradient(135deg, #E0E0E0 0%, #9E9E9E 100%); }
+        .rank-2 .badge { color: #9E9E9E; }
+
+        .rank-3 { background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%); }
+        .rank-3 .badge { color: #A0522D; }
+
+        .rank-other { background: linear-gradient(135deg, #4bc0c0 0%, #033771 100%); }
+        .rank-other .badge { color: #033771; }
+        
+        @media (max-width: 768px) {
+            .podium-item { width: 130px; }
+            .podium-photo { width: 80px; height: 80px; }
+            .podium-votes { font-size: 2rem; }
+            .podium-info { top: -110px; }
+            .podium-name { font-size: 0.85rem; padding: 5px 10px; margin-top: 20px; }
+            .header-title { font-size: 1.8rem; margin-top: 30px; }
+            .podium-section { margin-top: 100px; }
+        }
+    </style>
 </head>
-<script th:src="@{/js/chart.js_3.9.1_chart.min.js}"></script>
-<style>
-    body{
-        background: #f5f5f7;
-    }
-    .grafico{
-        width: 40%;
-        right: 30%;
-        position: absolute;
-    }
-    h1{
-        text-align: center;
-    }
-</style>
 <body>
-<h1 th:text="${election.name +' ' +election.year} "></h1>
-<div class="grafico">
-    <canvas id="myChart" width="400" height="400"></canvas>
-</div>
+
+    <h1 class="header-title" th:text="${election.name +' ' + election.year}"></h1>
+    
+    <div th:if="${results != null and not #lists.isEmpty(results)}">
+        <!-- ALL Candidates dynamically aligned as a bar chart / podium -->
+        <div class="podium-section">
+            <!-- maxVotes determines the tallest bar proportionally. results is sorted highest to lowest -->
+            <div class="podium-wrapper" th:with="maxVotes=${results[0][2] == 0 ? 1.0 : results[0][2]}">
+                
+                <th:block th:each="dato, stat : ${results}">
+                    <div class="podium-item" 
+                         th:style="'height: ' + (${dato[2]} * 260.0 / maxVotes + 130) + 'px; z-index: ' + (100 - stat.index) + ';'"
+                         th:classappend="${stat.index == 0 ? 'rank-1' : (stat.index == 1 ? 'rank-2' : (stat.index == 2 ? 'rank-3' : 'rank-other'))}">
+                        
+                        <div class="podium-info">
+                            <div class="podium-photo">
+                                <!-- Photo fallback logic: imgCandidate -> logo -> default -->
+                                <img th:src="@{/uploads/} + ${dato[3] != null and !#strings.isEmpty(dato[3]) ? dato[3] : (dato[4] != null and !#strings.isEmpty(dato[4]) ? dato[4] : 'x.png')}" alt="Candidato">
+                                <span class="badge" th:text="${stat.index + 1}"></span>
+                            </div>
+                            <div class="podium-name" th:title="${dato[0]}" th:text="${dato[0]}">Nombre Lista</div>
+                        </div>
+
+                        <div class="podium-votes" th:text="${dato[2]}">0</div>
+                        <div class="podium-label">VOTOS</div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+    
+    <div th:if="${results == null or #lists.isEmpty(results)}" style="text-align: center; margin-top: 80px;">
+        <h2 style="color: #666; font-weight: 700; font-size: 1.8rem;">Aún no hay votos registrados</h2>
+        <p style="color: #999;">Los resultados aparecerán aquí tan pronto como se emitan votos.</p>
+    </div>
 
 </body>
-
-<script th:inline="javascript">
-	 var labels	= [[${labels}]];
-     var data 	= [[${data}]];
-const ctx = document.getElementById('myChart').getContext('2d');
-const myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: labels,
-        datasets: [{
-            label: 'VOTOS',
-            data: data,
-            backgroundColor: [
-                '#ff638433',
-                '#36a2eb33',
-                '#ffce5633',
-                '#ff6384',  // Rojo
-			    '#36a2eb',  // Azul
-			    '#ffce56',  // Amarillo
-			    '#4bc0c0',  // Verde agua
-			    '#9966cc',  // Morado
-			    '#ff9f40',  // Naranja
-			    '#33cccc',  // Cian
-			    '#ff6699',  // Rosa
-			    '#99ff99',  // Verde claro
-			    '#c2c2f0'   // Azul claro
-                
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(255, 99, 132, 1)',       // Rojo
-			    'rgba(54, 162, 235, 1)',       // Azul
-			    'rgba(255, 206, 86, 1)',       // Amarillo
-			    'rgba(75, 192, 192, 1)',       // Verde agua
-			    'rgba(153, 102, 204, 1)',      // Morado
-			    'rgba(255, 159, 64, 1)',       // Naranja
-			    'rgba(51, 204, 204, 1)',       // Cian
-			    'rgba(255, 102, 153, 1)',      // Rosa
-			    'rgba(153, 255, 153, 1)',      // Verde claro
-			    'rgba(194, 194, 240, 1)'       // Azul claro
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-});
-</script>
-
 </html>

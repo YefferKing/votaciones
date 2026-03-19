@@ -158,8 +158,8 @@ public class ElectionController {
 	    int[] data = new int[size];
 	    int i = 0;
 	    for(Object[] dato : result){
-	        labels[i] = dato[0].toString();
-	        data[i] = Integer.parseInt(dato[2].toString());
+	        labels[i] = dato[0] != null ? dato[0].toString() : "Desconocido";
+	        data[i] = dato[2] != null ? Integer.parseInt(dato[2].toString()) : 0;
 	        i++;
 	    }
 		model.addAttribute("results", result);
