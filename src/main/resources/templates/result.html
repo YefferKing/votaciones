@@ -179,7 +179,7 @@
                 
                 <th:block th:each="r, stat : ${UIResults}">
                     <div class="podium-item" 
-                         th:style="'height: ' + ${r.height} + 'px; z-index: ' + (100 - stat.index) + ';'"
+                         th:style="'height: ' + ${r.height} + 'px; z-index: ' + ${100 - stat.index} + ';'"
                          th:classappend="${stat.index == 0 ? 'rank-1' : (stat.index == 1 ? 'rank-2' : (stat.index == 2 ? 'rank-3' : 'rank-other'))}">
                         
                         <div class="podium-info">
