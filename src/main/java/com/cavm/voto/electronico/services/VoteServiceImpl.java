@@ -36,6 +36,12 @@ public class VoteServiceImpl implements IVoteService {
 
 	@Override
 	@Transactional(readOnly = true)
+	public Long countByCandidateList(com.cavm.voto.electronico.models.CandidateList candidateList) {
+		return voteRepository.countByCandidateList(candidateList);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
 	public List<Student> findStudentsWithoutVotes() {
 		return voteRepository.findStudentsWithoutVotes();
 	}

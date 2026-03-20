@@ -10,6 +10,7 @@ public interface IVoteService {
 	Vote save(Vote vote);
 	Vote findByStudent(Student student);
 	List<Object[]> countVoteByList();
+	Long countByCandidateList(com.cavm.voto.electronico.models.CandidateList candidateList);
 	List<Student> findStudentsWithoutVotes();
 	void deleteByStudent(Student student);
 	void resetVotes();

@@ -151,36 +151,31 @@ public class ElectionController {
 	
 	@GetMapping("/result")
 	public String result(Model model) {
-		Election election 			= electionService.findFirstByOrderByIdAsc();
-		List<Object[]> result 		= voteService.countVoteByList();
-		int size = result.size();
-		String[] labels = new String[size];
-	    int[] data = new int[size];
-	    int i = 0;
-	    long maxVotes = 1; // Mínimo 1 para evitar division por cero
-        
-        // Calcular los votos máximos
-	    for(Object[] dato : result){
-			int voteCount = dato[2] != null ? Integer.parseInt(dato[2].toString()) : 0;
-	        if(voteCount > maxVotes) {
-	        	maxVotes = voteCount;
-	        }
-	    }
+		Election election = electionService.findFirstByOrderByIdAsc();
+		
+		// Load all candidates safely bypassing HQL custom projection issues
+		List<CandidateList> candidateLists = candidateListService.findAllByOrderById();
+		
+		long maxVotes = 1; // Mínimo 1 para evitar division por cero
         
         List<java.util.Map<String, Object>> UIResults = new java.util.ArrayList<>();
         
-        i = 0;
-	    for(Object[] dato : result){
-	        labels[i] = dato[0] != null ? dato[0].toString() : "Desconocido";
-	        data[i] = dato[2] != null ? Integer.parseInt(dato[2].toString()) : 0;
-			
-			java.util.Map<String, Object> map = new java.util.HashMap<>();
-            map.put("name", labels[i]);
-            map.put("votes", data[i]);
+	    for(CandidateList list : candidateLists){
+			// Count votes cleanly
+			Long vc = voteService.countByCandidateList(list);
+			int voteCount = vc != null ? vc.intValue() : 0;
             
-            // Verificaciones seguras de imagen (previniendo ArrayIndexOutOfBoundsException si la DB recorta la respuesta)
-            String imgCandidate = dato.length > 3 && dato[3] != null ? dato[3].toString().trim() : "";
-            String logo = dato.length > 4 && dato[4] != null ? dato[4].toString().trim() : "";
+	        if(voteCount > maxVotes) {
+	        	maxVotes = voteCount;
+	        }
+	        
+			java.util.Map<String, Object> map = new java.util.HashMap<>();
+            map.put("name", list.getName());
+            map.put("votes", voteCount);
+            
+            // Verificaciones seguras de imagen
+            String imgCandidate = list.getImgCandidate() != null ? list.getImgCandidate().trim() : "";
+            String logo = list.getLogo() != null ? list.getLogo().trim() : "";
             
             String finalImg = "x.png"; // Fallback por defecto
             if (!imgCandidate.isEmpty()) {
@@ -190,17 +185,21 @@ public class ElectionController {
             }
             
             map.put("image", finalImg);
-            map.put("height", (int)(data[i] * 260.0 / maxVotes + 130));
+            map.put("rawVotes", voteCount); // Almacenar para poder ordenar despues
             
             UIResults.add(map);
-	        i++;
+	    }
+	    
+	    // Sort the list descending by votes (podium semantics)
+	    UIResults.sort((m1, m2) -> Integer.compare((int)m2.get("rawVotes"), (int)m1.get("rawVotes")));
+	    
+	    // Assign dynamic height now that maxVotes is definitively known
+	    for (java.util.Map<String, Object> map : UIResults) {
+	    	map.put("height", (int)((int)map.get("rawVotes") * 260.0 / maxVotes + 130));
 	    }
         
         model.addAttribute("UIResults", UIResults);
-		model.addAttribute("results", result);
 		model.addAttribute("ruta", "result");
-		model.addAttribute("labels", labels);
-		model.addAttribute("data", data);
 		model.addAttribute("maxVotes", maxVotes);
 		model.addAttribute("election", election);
 		return "result";
