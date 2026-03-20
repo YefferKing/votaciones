@@ -171,27 +171,27 @@
 
     <h1 class="header-title" th:text="${election.name +' ' + election.year}"></h1>
     
-    <div th:if="${results != null and not #lists.isEmpty(results)}">
+    <div th:if="${UIResults != null and not #lists.isEmpty(UIResults)}">
         <!-- ALL Candidates dynamically aligned as a bar chart / podium -->
         <div class="podium-section">
             <!-- maxVotes determines the tallest bar proportionally. results is sorted highest to lowest -->
             <div class="podium-wrapper">
                 
-                <th:block th:each="dato, stat : ${results}">
+                <th:block th:each="r, stat : ${UIResults}">
                     <div class="podium-item" 
-                         th:style="'height: ' + (${dato[2]} * 260.0 / maxVotes + 130) + 'px; z-index: ' + (100 - stat.index) + ';'"
+                         th:style="'height: ' + ${r.height} + 'px; z-index: ' + (100 - stat.index) + ';'"
                          th:classappend="${stat.index == 0 ? 'rank-1' : (stat.index == 1 ? 'rank-2' : (stat.index == 2 ? 'rank-3' : 'rank-other'))}">
                         
                         <div class="podium-info">
                             <div class="podium-photo">
-                                <!-- Photo fallback logic: imgCandidate -> logo -> default -->
-                                <img th:src="@{/uploads/} + ${dato[3] != null and !#strings.isEmpty(dato[3]) ? dato[3] : (dato[4] != null and !#strings.isEmpty(dato[4]) ? dato[4] : 'x.png')}" alt="Candidato">
+                                <!-- Photo fallback logic applied in Java -->
+                                <img th:src="@{/uploads/} + ${r.image}" alt="Candidato">
                                 <span class="badge" th:text="${stat.index + 1}"></span>
                             </div>
-                            <div class="podium-name" th:title="${dato[0]}" th:text="${dato[0]}">Nombre Lista</div>
+                            <div class="podium-name" th:title="${r.name}" th:text="${r.name}">Nombre Lista</div>
                         </div>
 
-                        <div class="podium-votes" th:text="${dato[2]}">0</div>
+                        <div class="podium-votes" th:text="${r.votes}">0</div>
                         <div class="podium-label">VOTOS</div>
                     </div>
                 </th:block>
@@ -199,7 +199,7 @@
         </div>
     </div>
     
-    <div th:if="${results == null or #lists.isEmpty(results)}" style="text-align: center; margin-top: 80px;">
+    <div th:if="${UIResults == null or #lists.isEmpty(UIResults)}" style="text-align: center; margin-top: 80px;">
         <h2 style="color: #666; font-weight: 700; font-size: 1.8rem;">Aún no hay votos registrados</h2>
         <p style="color: #999;">Los resultados aparecerán aquí tan pronto como se emitan votos.</p>
     </div>

@@ -158,14 +158,45 @@ public class ElectionController {
 	    int[] data = new int[size];
 	    int i = 0;
 	    long maxVotes = 1; // Mínimo 1 para evitar division por cero
+        
+        // Calcular los votos máximos
+	    for(Object[] dato : result){
+			int voteCount = dato[2] != null ? Integer.parseInt(dato[2].toString()) : 0;
+	        if(voteCount > maxVotes) {
+	        	maxVotes = voteCount;
+	        }
+	    }
+        
+        List<java.util.Map<String, Object>> UIResults = new java.util.ArrayList<>();
+        
+        i = 0;
 	    for(Object[] dato : result){
 	        labels[i] = dato[0] != null ? dato[0].toString() : "Desconocido";
 	        data[i] = dato[2] != null ? Integer.parseInt(dato[2].toString()) : 0;
-	        if(data[i] > maxVotes) {
-	        	maxVotes = data[i];
-	        }
+			
+			java.util.Map<String, Object> map = new java.util.HashMap<>();
+            map.put("name", labels[i]);
+            map.put("votes", data[i]);
+            
+            // Verificaciones seguras de imagen (previniendo ArrayIndexOutOfBoundsException si la DB recorta la respuesta)
+            String imgCandidate = dato.length > 3 && dato[3] != null ? dato[3].toString().trim() : "";
+            String logo = dato.length > 4 && dato[4] != null ? dato[4].toString().trim() : "";
+            
+            String finalImg = "x.png"; // Fallback por defecto
+            if (!imgCandidate.isEmpty()) {
+                finalImg = imgCandidate;
+            } else if (!logo.isEmpty()) {
+                finalImg = logo;
+            }
+            
+            map.put("image", finalImg);
+            map.put("height", (int)(data[i] * 260.0 / maxVotes + 130));
+            
+            UIResults.add(map);
 	        i++;
 	    }
+        
+        model.addAttribute("UIResults", UIResults);
 		model.addAttribute("results", result);
 		model.addAttribute("ruta", "result");
 		model.addAttribute("labels", labels);
