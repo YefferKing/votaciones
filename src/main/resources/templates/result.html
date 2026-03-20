@@ -29,33 +29,39 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            margin-top: 150px;
+            margin-top: 20px; /* Reduced gap from title */
+            padding-top: 180px; /* Space for the floating card and name */
             padding-bottom: 50px;
-            min-height: 500px;
-            overflow-x: auto; /* In case there are many candidates */
+            padding-left: 20px;
+            padding-right: 20px;
+            min-height: auto;
         }
 
         .podium-wrapper {
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 20px;
-            padding: 0 40px;
+            gap: 15px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: nowrap; /* Keep them together for the podium feel on desktop */
         }
 
         .podium-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 220px;
+            width: 100%;
+            max-width: 220px; /* Max width to avoid looking too fat */
+            min-width: 140px; /* Better fitting for smaller windows */
             border-top-left-radius: 12px;
             border-top-right-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             position: relative;
             color: white;
             transition: all 0.3s ease;
-            flex-shrink: 0;
-            margin-top: 250px; /* Push the bars down so the absolute info overflowing the top doesn't hide */
+            flex: 1; /* Distribute available space */
         }
         
         .podium-item:hover {
@@ -65,20 +71,21 @@
 
         .podium-info {
             position: absolute;
-            bottom: 100%; /* Anchor precisely to the top of the bar */
+            bottom: 100%;
             left: 0;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 15px; /* Add space between text and bar */
+            padding-bottom: 15px;
             z-index: 10;
         }
 
         .podium-photo {
-            width: 180px;
-            height: 120px;
-            border-radius: 15px; /* Rectangular frame for wide photos */
+            width: 100%;
+            max-width: 180px;
+            aspect-ratio: 3/2; /* Keep rectangular shape relative to width */
+            border-radius: 15px;
             border: 4px solid white;
             box-shadow: 0 8px 15px rgba(0,0,0,0.15);
             background-color: white;
@@ -91,7 +98,7 @@
         .podium-photo img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Prevents cropping heads out */
+            object-fit: contain;
             border-radius: 10px;
         }
         
@@ -119,57 +126,61 @@
             font-weight: 700;
             color: #fff;
             text-align: center;
-            font-size: 0.9rem;
-            line-height: 1.3;
+            font-size: 0.85rem;
+            line-height: 1.2;
             background: rgba(3, 55, 113, 0.9);
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             width: 95%;
             box-sizing: border-box;
-            white-space: normal; /* Let the text wrap fully */
-            word-wrap: break-word; /* Don't truncate */
+            white-space: normal;
+            word-wrap: break-word;
             border: 2px solid rgba(255,255,255,0.2);
         }
 
         .podium-votes {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 800;
             margin-top: auto;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             text-shadow: 2px 3px 5px rgba(0,0,0,0.3);
         }
         
         .podium-label {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 800;
             opacity: 0.95;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
-        /* Rank specific backgrounds */
+        /* Rank backgrounds */
         .rank-1 { background: linear-gradient(135deg, #FFD700 0%, #F5A623 100%); }
-        .rank-1 .badge { color: #F5A623; }
-
         .rank-2 { background: linear-gradient(135deg, #E0E0E0 0%, #9E9E9E 100%); }
-        .rank-2 .badge { color: #9E9E9E; }
-
         .rank-3 { background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%); }
-        .rank-3 .badge { color: #A0522D; }
-
         .rank-other { background: linear-gradient(135deg, #4bc0c0 0%, #033771 100%); }
-        .rank-other .badge { color: #033771; }
         
-        @media (max-width: 768px) {
-            .podium-item { width: 140px; margin-top: 220px; }
-            .podium-photo { width: 110px; height: 80px; }
-            .podium-votes { font-size: 2rem; }
-            .podium-name { font-size: 0.8rem; padding: 6px 8px; margin-top: 20px; }
-            .header-title { font-size: 1.8rem; margin-top: 30px; }
-            .podium-section { margin-top: 50px; }
+        @media (max-width: 992px) {
+            .podium-wrapper { 
+                flex-wrap: wrap; 
+                justify-content: space-evenly;
+                gap: 30px 10px;
+            }
+            .podium-item { 
+                flex: 0 1 45%; 
+                margin-top: 150px; /* Separation for wrapped lines */
+            }
+            .podium-section {
+                padding-top: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .podium-item { 
+                flex: 0 1 90%; 
+            }
         }
     </style>
 </head>
