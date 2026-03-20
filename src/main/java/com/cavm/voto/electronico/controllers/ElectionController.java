@@ -191,11 +191,11 @@ public class ElectionController {
 	    }
 	    
 	    // Sort the list descending by votes (podium semantics)
-	    UIResults.sort((m1, m2) -> Integer.compare((int)m2.get("rawVotes"), (int)m1.get("rawVotes")));
+	    UIResults.sort((m1, m2) -> Integer.compare((Integer)m2.get("rawVotes"), (Integer)m1.get("rawVotes")));
 	    
 	    // Assign dynamic height now that maxVotes is definitively known
 	    for (java.util.Map<String, Object> map : UIResults) {
-	    	map.put("height", (int)((int)map.get("rawVotes") * 260.0 / maxVotes + 130));
+	    	map.put("height", (int)(((Integer)map.get("rawVotes")).intValue() * 260.0 / maxVotes + 130));
 	    }
         
         model.addAttribute("UIResults", UIResults);

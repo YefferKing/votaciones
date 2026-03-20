@@ -30,12 +30,6 @@ public class VoteServiceImpl implements IVoteService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Object[]> countVoteByList() {
-		return voteRepository.countVoteByList();
-	}
-
-	@Override
-	@Transactional(readOnly = true)
 	public Long countByCandidateList(com.cavm.voto.electronico.models.CandidateList candidateList) {
 		return voteRepository.countByCandidateList(candidateList);
 	}
