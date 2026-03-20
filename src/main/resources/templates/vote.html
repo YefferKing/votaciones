@@ -3,21 +3,9 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="left">
-			
-            <div class="alex" style="background-color: white;">
-				
-                <img th:if="${session.election != null}" th:src="@{/uploads/}+${session.election.logo}">
-                <img th:unless="${session.election != null}" th:src="@{/uploads/}+'x.png'">
-                <strong>
-					<p th:if="${session.election != null}" style="text-align: center;color: #033771; font-size: 1.5rem;" th:text="${session.election.name +' '+session.election.year}">
-					</p>
-                </strong>
-            </div>
-        </div>
-        <div class="right">
-	        <div>
+    <div class="container" style="grid-template-columns: 1fr;">
+        <div class="right" style="width: 100%;">
+	        <div style="width: 100%;">
             <div class="datos">Hola <strong th:text="${session.student.name}"></strong>, para emitir tu voto hacer click en la imagen de su candidato,
                 para ver la lista, click en la opción Candidatos.
             </div>
