@@ -152,6 +152,11 @@ public class ElectionController {
 	@GetMapping("/result")
 	public String result(Model model) {
 		Election election = electionService.findFirstByOrderByIdAsc();
+		if (election == null) {
+			election = new Election();
+			election.setName("Resultados de Elecciones");
+			election.setYear("");
+		}
 		
 		// Load all candidates safely bypassing HQL custom projection issues
 		List<CandidateList> candidateLists = candidateListService.findAllByOrderById();
