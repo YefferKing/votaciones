@@ -155,7 +155,7 @@ public class ElectionController {
 		if (election == null) {
 			election = new Election();
 			election.setName("Resultados de Elecciones");
-			election.setYear("");
+			election.setYear(0);
 		}
 		
 		// Load all candidates safely bypassing HQL custom projection issues
